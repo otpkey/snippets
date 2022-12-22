@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Server port="8005" shutdown="SHUTDOWN">
+  <Listener className="org.apache.catalina.startup.VersionLoggerListener" />
+  <!-- Security listener. Documentation at /docs/config/listeners.html
+  <Listener className="org.apache.catalina.security.SecurityListener" />
+  -->
+  <!--APR library loader. Documentation at /docs/apr.html -->
+  <Listener className="org.apache.catalina.core.AprLifecycleListener" SSLEngine="on" />
+  <!-- Prevent memory leaks due to use of particular java/javax APIs-->
+  <Listener className="org.apache.catalina.core.JreMemoryLeakPreventionListener" />
+  <Listener className="org.apache.catalina.mbeans.GlobalResourcesLifecycleListener" />
+  <Listener className="org.apache.catalina.core.ThreadLocalLeakPreventionListener" />
+
+  <GlobalNamingResources>
+    <Resource name="UserDatabase" auth="Container"
+              type="org.apache.catalina.UserDatabase"
+              description="User database that can be updated and saved"
+              factory="org.apache.catalina.users.MemoryUserDatabaseFactory"
+              pathname="conf/tomcat-users.xml" />
+  </GlobalNamingResources>
+
+  <Service name="OTPKEY_DEV" defaultHost="pi1.otpkey.org">
+     <Connector port="8080" protocol="HTTP/1.1"
+                connectionTimeout="20000"
+                redirectPort="8443" />
+     <Connector SSLEnabled="true" maxThreads="150" port="8443"
+                protocol="org.apache.coyote.http11.Http11NioProtocol">
+        <UpgradeProtocol className="org.apache.coyote.http2.Http2Protocol"/>
+        <SSLHostConfig protocols="TLSv1.2+TLSv1.3">
+            <Certificate
+                certificateChainFile="/certs/chain.pem"
+                certificateFile="/certs/cert.pem"
+                certificateKeyFile="/certs/privkey.pem"
+                type="RSA"/>
+        </SSLHostConfig>
+     </Connector>
+
+     <Connector address="192.168.0.201" secretRequired="false" port="8007" protocol="AJP/1.3" redirectPort="8443" />
+     <Connector address="192.168.0.201" secretRequired="false" port="8009" protocol="AJP/1.3" redirectPort="8443" />
+
+     <Engine>
+      <Host name="pi1.otpkey.org" appBase="webapps/dev"
+            unpackWARs="true" autoDeploy="true"
+            xmlValidation="false" xmlNamespaceAware="false">
+            <Context path="" docBase="" reloadable="false" />
+      </Host>
+     </Engine>
+  </Service>
+
+  <Service name="OTPKEY_API" defaultHost="pi1.otpkey.org">
+     <Connector port="6060" protocol="HTTP/1.1"
+                connectionTimeout="20000"
+                redirectPort="6443" />
+     <Connector SSLEnabled="true" maxThreads="150" port="6443"
+                protocol="org.apache.coyote.http11.Http11NioProtocol">
+        <UpgradeProtocol className="org.apache.coyote.http2.Http2Protocol"/>
+        <SSLHostConfig protocols="TLSv1.2+TLSv1.3">
+            <Certificate
+                certificateChainFile="/certs/chain.pem"
+                certificateFile="/certs/cert.pem"
+                certificateKeyFile="/certs/privkey.pem"
+                type="RSA"/>
+        </SSLHostConfig>
+     </Connector>
+
+     <Connector address="192.168.0.201" secretRequired="false" port="6007" protocol="AJP/1.3" redirectPort="6443" />
+     <Connector address="192.168.0.201" secretRequired="false" port="6009" protocol="AJP/1.3" redirectPort="6443" />
+
+     <Engine>
+      <Host name="pi1.otpkey.org" appBase="webapps/api"
+            unpackWARs="true" autoDeploy="true"
+            xmlValidation="false" xmlNamespaceAware="false">
+            <Context docBase="OTPKeyAPI" path="OTPKeyAPI" reloadable="false" source="org.eclipse.jst.jee.server:OTPKeyAPI" />
+      </Host>
+     </Engine>
+  </Service>
+
+  <Service name="OTPKEY_SVR" defaultHost="pi1.otpkey.org">
+     <Connector port="7070" protocol="HTTP/1.1"
+		connectionTimeout="20000"
+		redirectPort="7443" />
+
+     <Connector SSLEnabled="true" maxThreads="150" port="7443" 
+		protocol="org.apache.coyote.http11.Http11NioProtocol">
+        <UpgradeProtocol className="org.apache.coyote.http2.Http2Protocol"/>
+        <SSLHostConfig protocols="TLSv1.2+TLSv1.3">
+            <Certificate
+		certificateChainFile="/certs/chain.pem" 
+		certificateFile="/certs/cert.pem" 
+		certificateKeyFile="/certs/privkey.pem" 
+		type="RSA"/>
+        </SSLHostConfig>
+     </Connector>
+
+     <Connector address="192.168.0.201" secretRequired="false" port="7007" protocol="AJP/1.3" redirectPort="7443" />
+     <Connector address="192.168.0.201" secretRequired="false" port="7009" protocol="AJP/1.3" redirectPort="7443" />
+
+     <Engine>
+      <Host name="pi1.otpkey.org" appBase="webapps/svr"
+            unpackWARs="true" autoDeploy="true"
+            xmlValidation="false" xmlNamespaceAware="false">
+            <Context docBase="OTPKeySVR" path="OTPKeySVR" reloadable="false" source="org.eclipse.jst.jee.server:OTPKeySVR" />
+      </Host>
+     </Engine>
+  </Service>
+</Server>
