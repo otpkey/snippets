@@ -35,9 +35,11 @@
         </SSLHostConfig>
      </Connector>
 
+     <!--
      <Connector address="192.168.0.201" secretRequired="false" port="8007" protocol="AJP/1.3" redirectPort="8443" />
      <Connector address="192.168.0.201" secretRequired="false" port="8009" protocol="AJP/1.3" redirectPort="8443" />
-
+     -->
+     
      <Engine>
       <Host name="pi1.otpkey.org" appBase="webapps/dev"
             unpackWARs="true" autoDeploy="true"
@@ -63,8 +65,10 @@
         </SSLHostConfig>
      </Connector>
 
+     <!--
      <Connector address="192.168.0.201" secretRequired="false" port="6007" protocol="AJP/1.3" redirectPort="6443" />
      <Connector address="192.168.0.201" secretRequired="false" port="6009" protocol="AJP/1.3" redirectPort="6443" />
+     -->
 
      <Engine>
       <Host name="pi1.otpkey.org" appBase="webapps/api"
@@ -92,8 +96,10 @@
         </SSLHostConfig>
      </Connector>
 
+     <!--
      <Connector address="192.168.0.201" secretRequired="false" port="7007" protocol="AJP/1.3" redirectPort="7443" />
      <Connector address="192.168.0.201" secretRequired="false" port="7009" protocol="AJP/1.3" redirectPort="7443" />
+     -->
 
      <Engine>
       <Host name="pi1.otpkey.org" appBase="webapps/svr"
