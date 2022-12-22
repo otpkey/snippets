@@ -28,9 +28,9 @@
         <UpgradeProtocol className="org.apache.coyote.http2.Http2Protocol"/>
         <SSLHostConfig protocols="TLSv1.2+TLSv1.3">
             <Certificate
-                certificateChainFile="/etc/letsencrypt/live/dev.otpkey.com/chain.pem"
-                certificateFile="/etc/letsencrypt/live/dev.otpkey.com/cert.pem"
-                certificateKeyFile="/etc/letsencrypt/live/dev.otpkey.com/privkey.pem"
+                certificateChainFile="/certs/chain.pem"
+                certificateFile="/certs/cert.pem"
+                certificateKeyFile="/certs/privkey.pem"
                 type="RSA"/>
         </SSLHostConfig>
      </Connector>
@@ -56,9 +56,9 @@
         <UpgradeProtocol className="org.apache.coyote.http2.Http2Protocol"/>
         <SSLHostConfig protocols="TLSv1.2+TLSv1.3">
             <Certificate
-                certificateChainFile="/etc/letsencrypt/live/dev.otpkey.com/chain.pem"
-                certificateFile="/etc/letsencrypt/live/dev.otpkey.com/cert.pem"
-                certificateKeyFile="/etc/letsencrypt/live/dev.otpkey.com/privkey.pem"
+                certificateChainFile="/certs/chain.pem"
+                certificateFile="/certs/cert.pem"
+                certificateKeyFile="/certs/privkey.pem"
                 type="RSA"/>
         </SSLHostConfig>
      </Connector>
@@ -85,9 +85,9 @@
         <UpgradeProtocol className="org.apache.coyote.http2.Http2Protocol"/>
         <SSLHostConfig protocols="TLSv1.2+TLSv1.3">
             <Certificate
-		certificateChainFile="/etc/letsencrypt/live/dev.otpkey.com/chain.pem" 
-		certificateFile="/etc/letsencrypt/live/dev.otpkey.com/cert.pem" 
-		certificateKeyFile="/etc/letsencrypt/live/dev.otpkey.com/privkey.pem" 
+		certificateChainFile="/certs/chain.pem" 
+		certificateFile="/certs/cert.pem" 
+		certificateKeyFile="/certs/privkey.pem" 
 		type="RSA"/>
         </SSLHostConfig>
      </Connector>
