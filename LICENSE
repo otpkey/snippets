@@ -1,11 +1,1 @@
 Copyright Ⓒ 2022 Certchip Corp. All rights reserved.
-
-The following files are Certchip Corp. All rights reserved.
-- OTPKeyADM.war
-- OTPKeyAPI.war
-- OTPKeySVR.war
-- OTPKeyCore.jar
-- libotpkey.so
-- libotpkey.dylib
-- otpkey.dll
-For detailed usage rights, visit certchip.com or email to admin@certchip.com.
