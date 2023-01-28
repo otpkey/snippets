@@ -11,26 +11,26 @@
   <Listener className="org.apache.catalina.mbeans.GlobalResourcesLifecycleListener" />
   <Listener className="org.apache.catalina.core.ThreadLocalLeakPreventionListener" />
   <Service name="Catalina">
-     <Connector port="8080" protocol="HTTP/1.1"
-                connectionTimeout="20000"
-                redirectPort="8443" />
-     <Connector SSLEnabled="true" maxThreads="150" port="8443"
-                protocol="org.apache.coyote.http11.Http11NioProtocol">
+      <Connector port="8080" protocol="HTTP/1.1"
+                 connectionTimeout="20000"
+                 redirectPort="8443" />
+      <Connector SSLEnabled="true" maxThreads="150" port="8443"
+                 protocol="org.apache.coyote.http11.Http11NioProtocol">
         <UpgradeProtocol className="org.apache.coyote.http2.Http2Protocol"/>
         <SSLHostConfig protocols="TLSv1.2+TLSv1.3">
             <Certificate
-                certificateChainFile="/certs/chain.pem"
-                certificateFile="/certs/cert.pem"
-                certificateKeyFile="/certs/privkey.pem"
-                type="RSA"/>
+                 certificateChainFile="{CERTS}/chain.pem"
+                 certificateFile="{CERTS}/cert.pem"
+                 certificateKeyFile="{CERTS}/privkey.pem"
+                 type="RSA"/>
         </SSLHostConfig>
-     </Connector>
-     <Engine name="Catalina" defaultHost="localhost">
+      </Connector>
+      <Engine name="Catalina" defaultHost="localhost">
       <Host name="localhost" appBase="webapps"
             unpackWARs="true" autoDeploy="true">
-      	<Context docBase="OTPKeyADM" path="" reloadable="false" />
-	<Context docBase="OTPKeySVR" path="OTPKeySVR" reloadable="false" source="org.eclipse.jst.jee.server:OTPKeySVR" />
-	<Context docBase="OTPKeyAPI" path="OTPKeyAPI" reloadable="false" source="org.eclipse.jst.jee.server:OTPKeyAPI" />
+            <Context docBase="OTPKeyADM" path="" reloadable="false" />
+            <Context docBase="OTPKeySVR" path="OTPKeySVR" reloadable="false" source="org.eclipse.jst.jee.server:OTPKeySVR" />
+            <Context docBase="OTPKeyAPI" path="OTPKeyAPI" reloadable="false" source="org.eclipse.jst.jee.server:OTPKeyAPI" />
       </Host>
      </Engine>
   </Service> 
