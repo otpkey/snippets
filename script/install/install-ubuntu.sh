@@ -20,6 +20,11 @@ SERVICENAME=otpkey.service
 SERVICEFILE=/usr/lib/systemd/system/${SERVICENAME}
 INSTALLDIR=/opt/otpkey
 
+# firewall
+ufw allow ${HTTPPORT}/tcp
+ufw allow ${HTTPSPORT}/tcp
+
+
 rm -rf ${INSTALLDIR}
 mkdir -p ${INSTALLDIR}
 useradd -m -d ${INSTALLDIR} -U -s /bin/false otpkey
@@ -158,8 +163,8 @@ sed -i '/RestartSec/d' /usr/lib/systemd/system/nginx.service
 
 sed -i'' -r -e "/After/a\StartLimitBurst=5" /usr/lib/systemd/system/nginx.service
 sed -i'' -r -e "/After/a\StartLimitInterval=200" /usr/lib/systemd/system/nginx.service
-sed -i'' -r -e "/KillMode/a\RestartSec=30" /usr/lib/systemd/system/nginx.service
-sed -i'' -r -e "/KillMode/a\Restart=always" /usr/lib/systemd/system/nginx.service
+sed -i'' -r -e "/PIDFile/a\RestartSec=30" /usr/lib/systemd/system/nginx.service
+sed -i'' -r -e "/PIDFile/a\Restart=always" /usr/lib/systemd/system/nginx.service
 
 
 #rm -f /etc/nginx/sites-enabled/default
@@ -189,3 +194,4 @@ systemctl stop ${SERVICENAME}
 systemctl start ${SERVICENAME}
 systemctl enable ${SERVICENAME}
 
+echo "Finished"

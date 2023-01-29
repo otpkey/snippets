@@ -1,4 +1,4 @@
-DOMAIN=pi.otpkey.com
+DOMAIN=dev.otpkey.org
 PUSHURL=https://push.otpkey.com/functions/api
 
 HTTPPORT=80
@@ -21,22 +21,34 @@ SERVICEFILE=/usr/lib/systemd/system/${SERVICENAME}
 INSTALLDIR=/opt/otpkey
 
 # firewall
-ufw allow ${HTTPPORT}/tcp
-ufw allow ${HTTPSPORT}/tcp
-
+firewall-cmd --add-port=${HTTPPORT}/tcp --permanent
+firewall-cmd --add-port=${HTTPSPORT}/tcp --permanent
+firewall-cmd --reload
 
 rm -rf ${INSTALLDIR}
 mkdir -p ${INSTALLDIR}
 useradd -m -d ${INSTALLDIR} -U -s /bin/false otpkey
 
-#apt-get install -y net-tools
-apt install -y openjdk-8-jdk openjdk-8-jre
+yum install -y net-tools
 
-apt remove -y nginx
-apt install -y nginx
+#=============================================
+# for CentOS 7
+# --------------------------------------------
+# for nginx
+yum install -y yum-utils
+rm -f snippet.nginx.repo
+wget https://raw.githubusercontent.com/otpkey/snippets/main/snippet.nginx.repo
+mv -f snippet.nginx.repo /etc/yum.repos.d/.
+yum-config-manager --enable nginx-mainline
+# for redis
+yum install -y epel-release
+yum update -y
+#=============================================
 
-# for tomcat on pi 
-apt install -y libtcnative-1
+yum install -y java-1.8.0-openjdk java-1.8.0-openjdk-devel
+
+yum remove -y nginx
+yum install -y nginx
 
 rm -f apache-tomcat-8.5.84.tar.gz
 wget https://archive.apache.org/dist/tomcat/tomcat-8/v8.5.84/bin/apache-tomcat-8.5.84.tar.gz
@@ -45,8 +57,9 @@ mv apache-tomcat-8.5.84/* ${INSTALLDIR}/
 rm -rf apache-tomcat-8.5.84
 rm -f apache-tomcat-8.5.84.tar.gz
 
+
 rm -f libotpkey.so
-wget --no-cache https://github.com/otpkey/snippets/raw/main/dist/corelibs/Arm/armeabihf/libotpkey.so
+wget --no-cache https://github.com/otpkey/snippets/raw/main/dist/corelibs/linux-x86_64/libotpkey.so
 mv -f libotpkey.so /usr/lib/.
 
 rm -f OTPKeyCore.jar
@@ -125,8 +138,8 @@ sed -i "s/{WASHTTPSPORT}/${WASHTTPSPORT}/g" snippet.nginx.conf
 sed -i 's/www-data/root/g' snippet.nginx.conf
 mv -f snippet.nginx.conf /etc/nginx/nginx.conf
 
-apt -y install redis
-apt -y install mariadb-server
+yum -y install redis
+yum -y install mariadb-server
 
 sed -i "/${DOMAINHOST} ${DOMAIN}/d" /etc/hosts
 sed -i "/OTPKEY_DBS/d" /etc/hosts
@@ -138,7 +151,14 @@ echo "${DBSHOST} OTPKEY_DBS" >> /etc/hosts
 echo "${REDISHOST} OTPKEY_REDIS" >> /etc/hosts
 
 mkdir -p ${INSTALLDIR}/db
-#mysqld --initialize-insecure --basedir=/usr --datadir=${INSTALLDIR}/db --user=root
+
+# for CentOS 7
+systemctl start redis
+systemctl enable redis
+systemctl start mariadb
+systemctl enable mariadb
+
+#mysqld_safe --initialize-insecure --basedir=/usr --datadir=${INSTALLDIR}/db --user=root
 #mysqld --basedir=/usr --datadir=${INSTALLDIR}/db --user=root &
 #sleep 5
 
@@ -167,12 +187,23 @@ sed -i'' -r -e "/After/a\StartLimitInterval=200" /usr/lib/systemd/system/nginx.s
 sed -i'' -r -e "/PIDFile/a\RestartSec=30" /usr/lib/systemd/system/nginx.service
 sed -i'' -r -e "/PIDFile/a\Restart=always" /usr/lib/systemd/system/nginx.service
 
+# for CentOS 7
+sed -i '/user=/d' /usr/lib/systemd/system/nginx.service
+sed -i'' -r -e "/PIDFile/a\user=root" /usr/lib/systemd/system/nginx.service
+semanage permissive -a httpd_t
+#semanage permissive -d httpd_t
+
 
 #rm -f /etc/nginx/sites-enabled/default
 systemctl daemon-reload
 systemctl stop nginx
 systemctl start nginx
 systemctl enable nginx
+
+
+# for CentOS 8
+semanage fcontext -a -t bin_t "${INSTALLDIR}/bin(/.*)?"
+restorecon -r -v ${INSTALLDIR}/bin
 
 
 echo "[Unit]" > ${SERVICEFILE}
@@ -184,7 +215,7 @@ echo "Type=forking" >> ${SERVICEFILE}
 echo "Environment=\"${INSTALLDIR}\"" >> ${SERVICEFILE}
 echo "User=root" >> ${SERVICEFILE}
 echo "Group=root" >> ${SERVICEFILE}
-echo "ExecStart=${INSTALLDIR}/bin/startup.sh | systemctl restart nginx" >> ${SERVICEFILE}
+echo "ExecStart=${INSTALLDIR}/bin/startup.sh" >> ${SERVICEFILE}
 echo "ExecStop=${INSTALLDIR}/bin/shutdown.sh" >> ${SERVICEFILE}
 
 echo "[Install]" >> ${SERVICEFILE}
@@ -194,6 +225,5 @@ systemctl daemon-reload
 systemctl stop ${SERVICENAME}
 systemctl start ${SERVICENAME}
 systemctl enable ${SERVICENAME}
-
 
 echo "Finished"
