@@ -1,4 +1,4 @@
-DOMAIN=demo.otpkey.com
+DOMAIN=pi.otpkey.com
 PUSHURL=https://push.otpkey.com/functions/api
 
 HTTPPORT=80
@@ -17,14 +17,21 @@ DOMAINHOST=127.0.0.1
 SSLCERTLIVE=/etc/letsencrypt/live
 
 SERVICENAME=otpkey.service
-SERVICEFILE=/etc/systemd/system/${SERVICENAME}
+SERVICEFILE=/usr/lib/systemd/system/${SERVICENAME}
 INSTALLDIR=/opt/otpkey
 
-apt install -y net-tools
-apt install -y openjdk-8-jdk-headless openjdk-8-jre-headless
-apt install -y nginx
+rm -rf ${INSTALLDIR}
+mkdir -p ${INSTALLDIR}
 useradd -m -d ${INSTALLDIR} -U -s /bin/false otpkey
 
+#apt-get install -y net-tools
+apt install -y openjdk-8-jdk openjdk-8-jre
+
+apt remove -y nginx
+apt install -y nginx
+
+# for tomcat on pi 
+apt install -y libtcnative-1
 
 rm -f apache-tomcat-8.5.84.tar.gz
 wget https://archive.apache.org/dist/tomcat/tomcat-8/v8.5.84/bin/apache-tomcat-8.5.84.tar.gz
@@ -33,11 +40,9 @@ mv apache-tomcat-8.5.84/* ${INSTALLDIR}/
 rm -rf apache-tomcat-8.5.84
 rm -f apache-tomcat-8.5.84.tar.gz
 
-
 rm -f libotpkey.so
-wget --no-cache https://github.com/otpkey/snippets/raw/main/dist/corelibs/linux-x86_64/libotpkey.so
-mv -f libotpkey.so /lib64/.
-ln -sf /lib64/libotpkey.so /usr/lib/.
+wget --no-cache https://github.com/otpkey/snippets/raw/main/dist/corelibs/Arm/armeabihf/libotpkey.so
+mv -f libotpkey.so /usr/lib/.
 
 rm -f OTPKeyCore.jar
 wget --no-cache https://github.com/otpkey/snippets/raw/main/dist/java/latest/OTPKeyCore.jar
@@ -68,8 +73,16 @@ mv -f OTPKeySVR.war ${INSTALLDIR}/webapps/.
 
 rm -f snippet.server.xml
 wget --no-cache https://raw.githubusercontent.com/otpkey/snippets/main/snippet.server.xml
-sed -i "s/\/certs\//\/opt\/otpkey\/certs\/${DOMAIN}\//g" snippet.server.xml
+sed -i "s/{CERTS}\//\/opt\/otpkey\/certs\/${DOMAIN}\//g" snippet.server.xml
 mv -f snippet.server.xml ${INSTALLDIR}/conf/server.xml
+
+mkdir -p ${INSTALLDIR}/html
+rm -f preparing.html
+wget --no-cache https://raw.githubusercontent.com/otpkey/snippets/main/dist/html/preparing.html
+mv -f preparing.html ${INSTALLDIR}/html/preparing.html
+rm -f installing.html
+wget --no-cache https://raw.githubusercontent.com/otpkey/snippets/main/dist/html/installing.html
+mv -f installing.html ${INSTALLDIR}/html/installing.html
 
 chown -R root:root ${INSTALLDIR}
 
@@ -99,7 +112,6 @@ echo "com.otpkey.jdbcUrl=jdbc:mysql://OTPKEY_DBS:3306/otpkey?useSSL=false&server
 echo "com.otpkey.jdbcUsername=${DBSUSER}" >> ${CATALINAPROP}
 echo "com.otpkey.jdbcPassword=${DBSPW}" >> ${CATALINAPROP}
 
-
 rm -f snippet.nginx.conf
 wget --no-cache https://raw.githubusercontent.com/otpkey/snippets/main/snippet.nginx.conf
 sed -i "s/{CERTS}\//\/opt\/otpkey\/certs\/${DOMAIN}\//g" snippet.nginx.conf
@@ -110,6 +122,10 @@ mv -f snippet.nginx.conf /etc/nginx/nginx.conf
 
 apt -y install redis
 apt -y install mariadb-server
+
+sed -i "/${DOMAINHOST} ${DOMAIN}/d" /etc/hosts
+sed -i "/OTPKEY_DBS/d" /etc/hosts
+sed -i "/OTPKEY_REDIS/d" /etc/hosts
 
 echo "" >> /etc/hosts
 echo "${DOMAINHOST} ${DOMAIN}" >> /etc/hosts
@@ -126,9 +142,6 @@ mysql -e "CREATE USER '${DBSUSER}'@'localhost' IDENTIFIED BY '${DBSPW}';"
 mysql -e "GRANT ALL PRIVILEGES ON otpkey.* TO '${DBSUSER}'@'localhost';"
 mysql -e "FLUSH PRIVILEGES;"
 
-# 여기까지하면 mysqld, redis-server 이 자동 실행되도록 등록된다.
-# 이제부터 nginx, tomcat 실행 스크립트를 등록해야 한다.
-
 mkdir -p ${INSTALLDIR}/certs/${DOMAIN}      
 rm -f ${INSTALLDIR}/certs/${DOMAIN}/cert.pem
 rm -f ${INSTALLDIR}/certs/${DOMAIN}/chain.pem
@@ -139,7 +152,21 @@ ln -sf ${SSLCERTLIVE}/${DOMAIN}/chain.pem ${INSTALLDIR}/certs/${DOMAIN}/.
 ln -sf ${SSLCERTLIVE}/${DOMAIN}/fullchain.pem ${INSTALLDIR}/certs/${DOMAIN}/.                              
 ln -sf ${SSLCERTLIVE}/${DOMAIN}/privkey.pem ${INSTALLDIR}/certs/${DOMAIN}/.                                
 
-systemctl restart nginx
+sed -i '/StartLimitInterval/d' /usr/lib/systemd/system/nginx.service
+sed -i '/StartLimitBurst/d' /usr/lib/systemd/system/nginx.service
+sed -i '/Restart/d' /usr/lib/systemd/system/nginx.service
+sed -i '/RestartSec/d' /usr/lib/systemd/system/nginx.service
+
+sed -i'' -r -e "/After/a\StartLimitBurst=5" /usr/lib/systemd/system/nginx.service
+sed -i'' -r -e "/After/a\StartLimitInterval=200" /usr/lib/systemd/system/nginx.service
+sed -i'' -r -e "/KillMode/a\RestartSec=30" /usr/lib/systemd/system/nginx.service
+sed -i'' -r -e "/KillMode/a\Restart=always" /usr/lib/systemd/system/nginx.service
+
+
+#rm -f /etc/nginx/sites-enabled/default
+systemctl daemon-reload
+systemctl stop nginx
+systemctl start nginx
 systemctl enable nginx
 
 
@@ -152,7 +179,7 @@ echo "Type=forking" >> ${SERVICEFILE}
 echo "Environment=\"${INSTALLDIR}\"" >> ${SERVICEFILE}
 echo "User=root" >> ${SERVICEFILE}
 echo "Group=root" >> ${SERVICEFILE}
-echo "ExecStart=${INSTALLDIR}/bin/startup.sh" >> ${SERVICEFILE}
+echo "ExecStart=${INSTALLDIR}/bin/startup.sh | systemctl restart nginx" >> ${SERVICEFILE}
 echo "ExecStop=${INSTALLDIR}/bin/shutdown.sh" >> ${SERVICEFILE}
 
 echo "[Install]" >> ${SERVICEFILE}
@@ -162,4 +189,5 @@ systemctl daemon-reload
 systemctl stop ${SERVICENAME}
 systemctl start ${SERVICENAME}
 systemctl enable ${SERVICENAME}
+
 
