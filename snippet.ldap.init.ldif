@@ -2,7 +2,7 @@ dn: ou=admin,dc=otpkey,dc=com
 objectClass: organizationalUnit
 ou: admin
 
-dn: uid=admin@otpkey.com,ou=admin,dc=blocko,dc=io
+dn: uid=admin@otpkey.com,ou=admin,dc=otpkey,dc=com
 objectClass: person
 objectClass: uidObject
 objectClass: simpleSecurityObject

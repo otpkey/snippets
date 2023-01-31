@@ -7,12 +7,12 @@
 # more information : https://github.com/osixia/docker-light-baseimage
 
 # Required and used for new ldap server only
-LDAP_ORGANISATION: Certchip Corp.
-LDAP_DOMAIN: otpkey.com
+LDAP_ORGANISATION: {LDAP_ORGANISATION}
+LDAP_DOMAIN: {LDAP_DOMAIN}
 LDAP_BASE_DN: #if empty automatically set from LDAP_DOMAIN
 
-LDAP_ADMIN_PASSWORD: admin
-LDAP_CONFIG_PASSWORD: config
+LDAP_ADMIN_PASSWORD: {LDAP_ADMIN_PASSWORD}
+LDAP_CONFIG_PASSWORD: {LDAP_CONFIG_PASSWORD}
 
 LDAP_READONLY_USER: false
 LDAP_READONLY_USER_USERNAME: readonly
@@ -45,8 +45,8 @@ LDAP_REPLICATION: false
 LDAP_REPLICATION_CONFIG_SYNCPROV: binddn="cn=admin,cn=config" bindmethod=simple credentials="$LDAP_CONFIG_PASSWORD" searchbase="cn=config" type=refreshAndPersist retry="60 +" timeout=1 starttls=critical
 LDAP_REPLICATION_DB_SYNCPROV: binddn="cn=admin,$LDAP_BASE_DN" bindmethod=simple credentials="$LDAP_ADMIN_PASSWORD" searchbase="$LDAP_BASE_DN" type=refreshAndPersist interval=00:00:00:10 retry="60 +" timeout=1 starttls=critical
 LDAP_REPLICATION_HOSTS:
-  - ldap://ldap.example.org # The order must be the same on all ldap servers
-  - ldap://ldap2.example.org
+#  - ldap://ldap.example.org # The order must be the same on all ldap servers
+#  - ldap://ldap2.example.org
 
 # Do not change the ldap config
 # - If set to true with an existing database, config will remain unchanged. Image tls and replication config will not be run.
