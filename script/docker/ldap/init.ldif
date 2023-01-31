@@ -1,0 +1,27 @@
+dn: ou=admin,dc=otpkey,dc=com
+objectClass: organizationalUnit
+ou: admin
+
+dn: uid=admin@otpkey.com,ou=admin,dc=otpkey,dc=com
+objectClass: person
+objectClass: uidObject
+objectClass: simpleSecurityObject
+cn: Admin
+sn: System
+uid: admin@otpkey.com
+userPassword: Password1!
+
+
+dn: ou=user,dc=otpkey,dc=com
+objectClass: organizationalUnit
+ou: user
+
+dn: uid=john@otpkey.com,ou=user,dc=otpkey,dc=com
+objectClass: person
+objectClass: uidObject
+objectClass: simpleSecurityObject
+cn: John
+sn: Smith
+uid: john@otpkey.com
+userPassword: Password1!
+

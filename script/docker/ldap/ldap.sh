@@ -60,9 +60,15 @@ function _init {
     sed -i "" "s/{LDAP_CONFIG_PASSWORD}/${CONFIG_PASSWORD}/g" "${STARTUP_YAML}"
 
     mkdir -p "${CWD}/init"
-    rm -f snippet.ldap.init.ldif
-    wget --no-cache https://raw.githubusercontent.com/otpkey/snippets/main/snippet.ldap.init.ldif
-    mv -f snippet.ldap.init.ldif "${CWD}/init/init.ldif"
+    INIT_LDIF="${CWD}/init.ldif"
+    if [ -f "${INIT_LDIF}" ]
+    then
+        cp -f "${INIT_LDIF}" "${CWD}/init/."
+    else
+        rm -f snippet.ldap.init.ldif
+        wget --no-cache https://raw.githubusercontent.com/otpkey/snippets/main/snippet.ldap.init.ldif
+        mv -f snippet.ldap.init.ldif "${CWD}/init/init.ldif"
+    fi
 
     docker create --name ldap \
         -v "${CONFIG}":/container/environment/01-custom \
