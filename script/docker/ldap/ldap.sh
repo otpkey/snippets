@@ -70,6 +70,10 @@ function _init {
         mv -f snippet.ldap.init.ldif "${CWD}/init/init.ldif"
     fi
 
+    BaseDN="dc=${DOMAIN//./,dc=}"
+    sed -i "" "s/otpkey.com/${DOMAIN}/g" "${CWD}/init/init.ldif"
+    sed -i "" "s/dc=otpkey,dc=com/${BaseDN}/g" "${CWD}/init/init.ldif"
+
     docker create --name ldap \
         -v "${CONFIG}":/container/environment/01-custom \
         -v "${CWD}/init":/container/service/slapd/assets/config/bootstrap/ldif/custom\
@@ -125,7 +129,7 @@ then
         _pull
         _init
         _start
-        sleep 5
+        sleep 3
         _check_installed;
         echo "Installed and Started"
     else    
@@ -136,7 +140,7 @@ then
             # LDAP does not started.
             _init
             _start
-            sleep 5
+            sleep 3
             _check_installed;
             echo "Initialized and Started"
         else

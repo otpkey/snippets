@@ -1,10 +1,3 @@
-dn: dc=otpkey,dc=com
-objectclass: top
-objectclass: domain
-objectclass: extensibleObject
-dc: otpkey
-
-
 dn: ou=admin,dc=otpkey,dc=com
 objectClass: organizationalUnit
 ou: admin
@@ -47,7 +40,7 @@ uid: john@otpkey.com
 userPassword: johnPassword1!
 
 
-dn: cn=administrators,ou=dev,dc=otpkey,dc=com
+dn: cn=administrators,ou=admin,dc=otpkey,dc=com
 objectclass: top
 objectclass: groupOfUniqueNames
 cn: administrators
