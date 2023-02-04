@@ -1,3 +1,10 @@
+dn: dc=otpkey,dc=com
+objectclass: top
+objectclass: domain
+objectclass: extensibleObject
+dc: otpkey
+
+
 dn: ou=admin,dc=otpkey,dc=com
 objectClass: organizationalUnit
 ou: admin
@@ -5,11 +12,25 @@ ou: admin
 dn: uid=admin@otpkey.com,ou=admin,dc=otpkey,dc=com
 objectClass: person
 objectClass: uidObject
-objectClass: simpleSecurityObject
+objectClass: organizationalPerson
 cn: Admin
 sn: System
 uid: admin@otpkey.com
-userPassword: Password1!
+userPassword: adminPassword1!
+
+
+dn: ou=dev,dc=otpkey,dc=com
+objectClass: organizationalUnit
+ou: dev
+
+dn: uid=dev@otpkey.com,ou=dev,dc=otpkey,dc=com
+objectClass: person
+objectClass: uidObject
+objectClass: organizationalPerson
+cn: Developer
+sn: R&D
+uid: dev@otpkey.com
+userPassword: devPassword1!
 
 
 dn: ou=user,dc=otpkey,dc=com
@@ -19,9 +40,35 @@ ou: user
 dn: uid=john@otpkey.com,ou=user,dc=otpkey,dc=com
 objectClass: person
 objectClass: uidObject
-objectClass: simpleSecurityObject
+objectClass: organizationalPerson
 cn: John
 sn: Smith
 uid: john@otpkey.com
-userPassword: Password1!
+userPassword: johnPassword1!
 
+
+dn: cn=administrators,ou=dev,dc=otpkey,dc=com
+objectclass: top
+objectclass: groupOfUniqueNames
+cn: administrators
+ou: administrator
+uniqueMember: uid=admin@otpkey.com,ou=admin,dc=otpkey,dc=com
+
+
+dn: cn=developers,ou=dev,dc=otpkey,dc=com
+objectclass: top
+objectclass: groupOfUniqueNames
+cn: developers
+ou: developer
+uniqueMember: uid=admin@otpkey.com,ou=admin,dc=otpkey,dc=com
+uniqueMember: uid=dev@otpkey.com,ou=dev,dc=otpkey,dc=com
+
+
+dn: cn=members,ou=user,dc=otpkey,dc=com
+objectclass: top
+objectclass: groupOfUniqueNames
+cn: members
+ou: member
+uniqueMember: uid=admin@otpkey.com,ou=admin,dc=otpkey,dc=com
+uniqueMember: uid=dev@otpkey.com,ou=dev,dc=otpkey,dc=com
+uniqueMember: uid=john@otpkey.com,ou=user,dc=otpkey,dc=com
