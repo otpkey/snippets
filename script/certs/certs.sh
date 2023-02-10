@@ -1,5 +1,12 @@
 #!/bin/bash
 
+#/**
+# * OTPKEY
+# * certs.sh
+# * https://otpkey.com/license
+# * Copyright Ⓒ 2023 Certchip Corp. All rights reserved.
+# */
+
 CMD=$1
 DOMAIN=$2
 PROVIDER=$3

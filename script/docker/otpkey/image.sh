@@ -1,5 +1,12 @@
 #!/bin/bash
 
+#/**
+# * OTPKEY
+# * image.sh
+# * https://otpkey.com/license
+# * Copyright Ⓒ 2023 Certchip Corp. All rights reserved.
+# */
+
 # image.sh install/uninstall/build/make/run/start/stop/rm/bash/prun docker-name domain [-certbot your_email]
 
 source ./env.sh "$2" "$3" "$4" "$5"

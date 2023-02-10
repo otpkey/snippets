@@ -1,5 +1,12 @@
 #!/bin/bash
 
+#/**
+# * OTPKEY
+# * ldap.sh
+# * https://otpkey.com/license
+# * Copyright Ⓒ 2023 Certchip Corp. All rights reserved.
+# */
+
 CMD=$1
 
 ORGANISATION=$2

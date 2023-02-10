@@ -1,5 +1,12 @@
 #!/bin/bash
 
+#/**
+# * OTPKEY
+# * env.sh
+# * https://otpkey.com/license
+# * Copyright Ⓒ 2023 Certchip Corp. All rights reserved.
+# */
+
 export DOCKER_NAME=$1
 export DOCKER_DOMAIN=$2
 export DOCKER_PUSHURL=https://push.otpkey.com/functions/api

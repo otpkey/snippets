@@ -1,5 +1,12 @@
 #!/bin/bash
 
+#/**
+# * OTPKEY
+# * container.sh
+# * https://otpkey.com/license
+# * Copyright Ⓒ 2023 Certchip Corp. All rights reserved.
+# */
+
 # container.sh run/start/stop/rm docker-name container-name service-port
 
 source ./env.sh "$2" "$3" "$4"

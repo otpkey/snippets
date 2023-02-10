@@ -1,3 +1,12 @@
+#!/bin/bash
+
+#/**
+# * OTPKEY
+# * install-ubuntu.sh
+# * https://otpkey.com/license
+# * Copyright Ⓒ 2023 Certchip Corp. All rights reserved.
+# */
+
 DOMAIN=dev.otpkey.org
 PUSHURL=https://push.otpkey.com/functions/api
 

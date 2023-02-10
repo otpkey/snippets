@@ -1,3 +1,12 @@
+#!/bin/bash
+
+#/**
+# * OTPKEY
+# * install-pi.sh
+# * https://otpkey.com/license
+# * Copyright Ⓒ 2023 Certchip Corp. All rights reserved.
+# */
+
 DOMAIN=pi.otpkey.com
 PUSHURL=https://push.otpkey.com/functions/api
 
