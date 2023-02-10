@@ -1,3 +1,10 @@
+#/**
+# * OTPKEY
+# * Dockerfile
+# * https://otpkey.com/license
+# * Copyright Ⓒ 2023 Certchip Corp. All rights reserved.
+# */
+
 FROM centos:8
 USER root
 
