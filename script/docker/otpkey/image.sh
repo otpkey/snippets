@@ -7,12 +7,10 @@
 # * Copyright Ⓒ 2023 Certchip Corp. All rights reserved.
 # */
 
-# image.sh install/uninstall/build/make/run/start/stop/rm/bash/prun docker-name domain [-certbot your_email]
-
 source ./env.sh "$2" "$3" "$4" "$5"
 
 function usage {
-    echo "Usage : image.sh install/uninstall/build/make/run/start/stop/restart/rm/bash/prun docker-name domain [-certbot your_email]"
+    echo "Usage : image.sh install/uninstall/build/make/run/start/stop/restart/rm/bash/prun {docker-name} {domain} [-certbot {email}]"
 }
 
 function certbot {

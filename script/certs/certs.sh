@@ -15,9 +15,15 @@ FIREWALL=$5
 TEST=$6
 COPY=$7
 
+function installcertbot {
+    # for CentOS
+    sudo yum -y install epel-release yum-utils
+    sudo yum -y install certbot
+}
+
 function usage {
-    echo "Usage : certs.sh new domain [-certbot your_email] [-firewall] [-test] [-copy/-symlink]"
-    echo "Usage : certs.sh renew domain [-certbot] [-test] [-copy/-symlink]"
+    echo "Usage : certs.sh new {domain} [-certbot {email}] [-firewall] [-test] [-copy/-symlink]"
+    echo "Usage : certs.sh renew {domain} [-certbot] [-test] [-copy/-symlink]"
 }
 
 PROCESSED=0

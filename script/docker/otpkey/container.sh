@@ -7,14 +7,13 @@
 # * Copyright Ⓒ 2023 Certchip Corp. All rights reserved.
 # */
 
-# container.sh run/start/stop/rm docker-name container-name service-port
 
 source ./env.sh "$2" "$3" "$4"
 
 PROCESSED=0
 
 function usage {
-    echo "Usage : container.sh run/start/stop/restart/rm docker-name container-name service-port"
+    echo "Usage : container.sh run/start/stop/restart/rm {docker-name} {container-name} {service-port}"
 }
 
 if [ ! -z "$DOCKER_NAME" ] && [ ! -z "$CONTAINER_NAME" ] && [ ! -z "$SERVICE_PORT" ]

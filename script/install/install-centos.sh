@@ -29,6 +29,10 @@ SERVICENAME=otpkey.service
 SERVICEFILE=/usr/lib/systemd/system/${SERVICENAME}
 INSTALLDIR=/opt/otpkey
 
+# for CentOS 8 min
+yum install -y firewalld
+yum install -y wget
+
 # firewall
 firewall-cmd --add-port=${HTTPPORT}/tcp --permanent
 firewall-cmd --add-port=${HTTPSPORT}/tcp --permanent
